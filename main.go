@@ -9,6 +9,8 @@ import (
 	"github.com/linkedin/goavro"
 	"os"
 	"bufio"
+	"time"
+	"strconv"
 )
 
 type Activity struct {
@@ -28,9 +30,35 @@ func main() {
 	r.HandleFunc("/json", getAllInJson).Methods("GET")
 	r.HandleFunc("/avro", getAllInAvro).Methods("GET")
 
+	r.HandleFunc("/generate", generateData).Methods("POST")
+
 
 	fmt.Println("Listening on port 9999")
 	log.Fatal(http.ListenAndServe(":9999", r))
+}
+
+func generateData(w http.ResponseWriter, r *http.Request) {
+	var max int
+	var err error
+	if val, ok := r.URL.Query()["max"]; ok {
+		max, err = strconv.Atoi(val[0])
+		if err != nil {
+		}
+	} else {
+		max = 100
+	}
+	now := time.Now()
+	secs := now.Unix()
+	longString := "This is a long long long long long long long long long long long long long data"
+	for i := 0; i < max; i++ {
+		activity := Activity{
+			"sampleId",
+			"Create",
+			(longString + strconv.Itoa(int(secs)) + " - index: " + strconv.Itoa(i)),
+		}
+		writeDataInJson(activity)
+		writeDataInAvro(activity)
+	}
 }
 
 func getAllInJson(w http.ResponseWriter, r *http.Request) {
@@ -143,16 +171,6 @@ func writeDataInAvro(activity Activity) {
 
 	fmt.Fprintf(file, string(binary))
 	fmt.Fprintf(file, "\n")
-
-	///Convert Native from Binary
-	native, _, err := codec.NativeFromBinary(binary)
-	if err != nil {
-		panic(err)
-	}
-
-	activityOut := StringMapToUser(native.(map[string]interface{}))
-
-	fmt.Println(activityOut)
 }
 
 func (activity *Activity) ToStringMap() map[string]interface{} {
