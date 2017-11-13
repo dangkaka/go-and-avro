@@ -49,7 +49,7 @@ func generateData(w http.ResponseWriter, r *http.Request) {
 	}
 	now := time.Now()
 	secs := now.Unix()
-	longString := "This is a long long long long long long long long long long long long long data"
+	longString := "This is a long long long long long long long long long long long long long data "
 	for i := 0; i < max; i++ {
 		activity := Activity{
 			"sampleId",
