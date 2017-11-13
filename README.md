@@ -1,7 +1,7 @@
 # go-and-avro
 Test go and avro, compare avro with json
 
-h4. Generate sample data
+## Generate sample data
 Ex: generate 10000 rows
 ```curl -X POST 'http://localhost:9999/generate?max=10000'```
 
@@ -13,7 +13,7 @@ const (
 )
 ```
 
-h4. View
+## View
 * Avro
 ```http://localhost:9999/avro```
 
