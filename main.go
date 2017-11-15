@@ -11,6 +11,8 @@ import (
 	"bufio"
 	"time"
 	"strconv"
+	"testgogen/avro"
+	"bytes"
 )
 
 type Activity struct {
@@ -22,6 +24,7 @@ type Activity struct {
 const (
 	JsonPath   = "/tmp/go-and-avro.json"
 	AvroPath = "/tmp/go-and-avro.avro"
+	GoGenAvroPath = "/tmp/go-and-avro.gogenavro"
 )
 
 func main() {
@@ -29,6 +32,7 @@ func main() {
 	r.HandleFunc("/", writeData).Methods("POST")
 	r.HandleFunc("/json", getAllInJson).Methods("GET")
 	r.HandleFunc("/avro", getAllInAvro).Methods("GET")
+	r.HandleFunc("/gogenavro", getAllInGoGenAvro).Methods("GET")
 
 	r.HandleFunc("/generate", generateData).Methods("POST")
 
@@ -51,13 +55,15 @@ func generateData(w http.ResponseWriter, r *http.Request) {
 	secs := now.Unix()
 	longString := "This is a long long long long long long long long long long long long long data "
 	for i := 0; i < max; i++ {
+		value := (longString + strconv.Itoa(int(secs)) + " - index: " + strconv.Itoa(i))
 		activity := Activity{
 			"sampleId",
 			"Create",
-			(longString + strconv.Itoa(int(secs)) + " - index: " + strconv.Itoa(i)),
+			value,
 		}
 		writeDataInJson(activity)
 		writeDataInAvro(activity)
+		writeDataInGoGenAvro(value)
 	}
 }
 
@@ -114,6 +120,27 @@ func getAllInAvro(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(activities)
 }
 
+func getAllInGoGenAvro(w http.ResponseWriter, r *http.Request) {
+	f, err := os.Open(GoGenAvroPath)
+	if err != nil {
+		panic(err)
+	}
+	defer f.Close()
+
+	var activities []avro.Activity
+	scanner := bufio.NewScanner(f)
+	for scanner.Scan() {
+		activityOut, err := avro.DeserializeActivity(bytes.NewReader([]byte(scanner.Text())))
+		if err != nil {
+			panic(err)
+		}
+
+		activities = append(activities, *activityOut)
+	}
+
+	json.NewEncoder(w).Encode(activities)
+}
+
 func writeData(w http.ResponseWriter, r *http.Request) {
 	var value string
 	if val, ok := r.URL.Query()["value"]; ok {
@@ -126,6 +153,7 @@ func writeData(w http.ResponseWriter, r *http.Request) {
 	}
 	writeDataInJson(activity)
 	writeDataInAvro(activity)
+	writeDataInGoGenAvro(value)
 }
 
 func writeDataInJson(activity Activity) {
@@ -170,6 +198,24 @@ func writeDataInAvro(activity Activity) {
 	defer file.Close()
 
 	fmt.Fprintf(file, string(binary))
+	fmt.Fprintf(file, "\n")
+}
+
+func writeDataInGoGenAvro(value string) {
+	activity := avro.Activity{
+		"xxxxxxx",
+		"Create",
+		value,
+	}
+	var buf bytes.Buffer
+	activity.Serialize(&buf)
+	file, err := os.OpenFile(GoGenAvroPath, os.O_RDWR|os.O_APPEND|os.O_CREATE, 0660);
+	if err != nil {
+		log.Fatal("Cannot create file", err)
+	}
+	defer file.Close()
+
+	fmt.Fprintf(file, buf.String())
 	fmt.Fprintf(file, "\n")
 }
 

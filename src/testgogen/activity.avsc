@@ -1,0 +1,10 @@
+{
+	"type": "record",
+	"name": "Activity",
+	"fields": [
+		{"name": "Id", "type": "string"},
+		{"name": "Type", "type": "string"},
+		{"name": "Data", "type": "string"}
+	]
+
+}
