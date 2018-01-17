@@ -7,6 +7,11 @@ https://github.com/linkedin/goavro
 - Be able to generate simple data (in json and 2 avro libraries) and save them in 3 files
 - Be able to get data from those 3 files by GET request
 
+## How to use https://github.com/alanctgardner/gogen-avro
+```go install github.com/alanctgardner/gogen-avro/gogen-avro```
+
+```go generate```
+
 ## Generate sample data
 Ex: generate 10000 rows
 ```curl -X POST 'http://localhost:9999/generate?max=10000'```
