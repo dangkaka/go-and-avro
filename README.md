@@ -1,9 +1,11 @@
-# go-and-avro
-Test go and avro, compare avro with json
+# go-and-avro-example
+Test go and avro, compare json and 2 avro libraries
+https://github.com/alanctgardner/gogen-avro
+https://github.com/linkedin/goavro
 
 ## What can we do here
-- Be able to generate simple data (in json and avro) and save it in 2 files
-- Be able to get data from json and avro from those 2 files by GET request
+- Be able to generate simple data (in json and 2 avro libraries) and save them in 3 files
+- Be able to get data from those 3 files by GET request
 
 ## Generate sample data
 Ex: generate 10000 rows
@@ -12,14 +14,19 @@ Ex: generate 10000 rows
 Generated data stays in 
 ```
 const (
-	JsonPath   = "/tmp/go-and-avro.json"
-	AvroPath = "/tmp/go-and-avro.avro"
+	JsonPath   = "examples/json.json"
+	GoavroPath = "examples/goavro.avro"
+	GoGenAvroPath = "examples/gogen-avro.avro"
 )
 ```
 
 ## View
-* Avro
-```http://localhost:9999/avro```
-
 * Json
 ```http://localhost:9999/json```
+
+* Goavro with 
+```http://localhost:9999/goavro```
+
+* GoGenAvro
+```http://localhost:9999/gogenavro```
+

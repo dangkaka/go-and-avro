@@ -22,16 +22,16 @@ type Activity struct {
 }
 
 const (
-	JsonPath   = "examples/go-and-avro.json"
-	AvroPath = "examples/go-and-avro.avro"
-	GoGenAvroPath = "examples/go-and-avro.gogenavro"
+	JsonPath   = "examples/json.json"
+	GoavroPath = "examples/goavro.avro"
+	GoGenAvroPath = "examples/gogen-avro.avro"
 )
 
 func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/", writeData).Methods("POST")
 	r.HandleFunc("/json", getAllInJson).Methods("GET")
-	r.HandleFunc("/avro", getAllInAvro).Methods("GET")
+	r.HandleFunc("/goavro", getAllInGoAvro).Methods("GET")
 	r.HandleFunc("/gogenavro", getAllInGoGenAvro).Methods("GET")
 
 	r.HandleFunc("/generate", generateData).Methods("POST")
@@ -87,7 +87,7 @@ func getAllInJson(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(activities)
 }
 
-func getAllInAvro(w http.ResponseWriter, r *http.Request) {
+func getAllInGoAvro(w http.ResponseWriter, r *http.Request) {
 	codec, err := goavro.NewCodec(`
         {
           "type": "record",
@@ -98,7 +98,7 @@ func getAllInAvro(w http.ResponseWriter, r *http.Request) {
 			 {"name": "Data", "type": "string"}
           ]
         }`)
-	f, err := os.Open(AvroPath)
+	f, err := os.Open(GoavroPath)
 	if err != nil {
 		panic(err)
 	}
@@ -191,7 +191,7 @@ func writeDataInAvro(activity Activity) {
 		fmt.Println(err)
 	}
 
-	file, err := os.OpenFile(AvroPath, os.O_RDWR|os.O_APPEND|os.O_CREATE, 0660);
+	file, err := os.OpenFile(GoavroPath, os.O_RDWR|os.O_APPEND|os.O_CREATE, 0660);
 	if err != nil {
 		log.Fatal("Cannot create file", err)
 	}
