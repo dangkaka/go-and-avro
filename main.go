@@ -7,11 +7,11 @@ import (
 	"net/http"
 	"encoding/json"
 	"github.com/linkedin/goavro"
+	"github.com/dangkaka/go-and-avro-example/avro"
 	"os"
 	"bufio"
 	"time"
 	"strconv"
-	"testgogen/avro"
 	"bytes"
 )
 
@@ -22,9 +22,9 @@ type Activity struct {
 }
 
 const (
-	JsonPath   = "/tmp/go-and-avro.json"
-	AvroPath = "/tmp/go-and-avro.avro"
-	GoGenAvroPath = "/tmp/go-and-avro.gogenavro"
+	JsonPath   = "examples/go-and-avro.json"
+	AvroPath = "examples/go-and-avro.avro"
+	GoGenAvroPath = "examples/go-and-avro.gogenavro"
 )
 
 func main() {
@@ -147,7 +147,7 @@ func writeData(w http.ResponseWriter, r *http.Request) {
 		value = val[0]
 	}
 	activity := Activity{
-		"xxxxxxx",
+		"1",
 		"Create",
 		value,
 	}
@@ -203,7 +203,7 @@ func writeDataInAvro(activity Activity) {
 
 func writeDataInGoGenAvro(value string) {
 	activity := avro.Activity{
-		"xxxxxxx",
+		"1",
 		"Create",
 		value,
 	}
@@ -229,7 +229,6 @@ func (activity *Activity) ToStringMap() map[string]interface{} {
 }
 
 func StringMapToUser(data map[string]interface{}) Activity {
-
 	ind := Activity{}
 	for k, v := range data {
 		switch k {
@@ -248,5 +247,4 @@ func StringMapToUser(data map[string]interface{}) Activity {
 		}
 	}
 	return ind
-
 }

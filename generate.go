@@ -1,4 +1,4 @@
-package generate
+package main
 
 // Use a go:generate directive to build the Go structs for `example.avsc`
 // These files are used for all of the example projects
