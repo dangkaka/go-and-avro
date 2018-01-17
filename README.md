@@ -1,7 +1,8 @@
 # go-and-avro-example
 Test go and avro, compare json and 2 avro libraries
-https://github.com/alanctgardner/gogen-avro
+
 https://github.com/linkedin/goavro
+https://github.com/alanctgardner/gogen-avro
 
 ## What can we do here
 - Be able to generate simple data (in json and 2 avro libraries) and save them in 3 files
@@ -9,6 +10,7 @@ https://github.com/linkedin/goavro
 
 ## Generate sample data
 Ex: generate 10000 rows
+
 ```curl -X POST 'http://localhost:9999/generate?max=10000'```
 
 Generated data stays in 
